@@ -1,0 +1,32 @@
+﻿@model Nop.Plugin.Misc.PrintCalculator.Models.ConfigurationModel
+
+@{
+    Layout = "_ConfigurePlugin";
+}
+
+<form asp-controller="PrintCalculator" asp-action="Configure" method="post">
+    <div class="content">
+        <div class="form-horizontal">
+            <nop-cards>
+                <nop-card asp-icon="fas fa-info" asp-title="Konfiguracija" asp-advanced="false">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <nop-label asp-for="PrintCategoryID" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="PrintCategoryID" asp-required="true" />
+                            <span asp-validation-for="PrintCategoryID"></span>
+                        </div>
+                    </div>
+                </nop-card>
+                <div class="form-group row">
+                    <div class="col-md-9 offset-md-3">
+                        <button type="submit" class="btn btn-info">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </nop-cards>
+        </div>
+    </div>
+</form>

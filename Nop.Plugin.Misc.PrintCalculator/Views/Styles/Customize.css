@@ -1,0 +1,54 @@
+﻿#print-preview {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#print-details {
+    padding: 20px
+}
+
+#print-details strong{
+    font-size: 1.75em;
+}
+
+#print-details .option {
+  display: flex;
+  justify-content: space-between;
+  width: 25vw;
+  font-size: 1.25em;
+  line-height: 1.5em;
+}
+
+#print-details .option input {
+  transform: scale(1.3);
+}
+
+#print-details .option.check {
+  width: 10vw;
+}
+
+#print-details .spacer {
+    height:7px;
+}
+
+#print-details .option select {
+  min-width: 60%;
+}
+
+@media only screen and (max-width: 600px) {
+  #print-details .option {
+    display: flex;
+    justify-content: space-between;
+    width: 70vw;
+  }
+
+  #print-details .option.check {
+    width: 50vw;
+  }
+}
+
+#submit-print {
+  padding: 5px;
+  font-size: 18px;
+  font-weight: bold;
+}

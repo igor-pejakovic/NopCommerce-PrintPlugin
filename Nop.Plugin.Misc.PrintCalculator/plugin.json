@@ -1,0 +1,11 @@
+{
+  "Group": "Misc",
+  "FriendlyName": "Print Calculation plugin",
+  "SystemName": "Misc.PrintCalculator",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.40" ],
+  "Author": "Igor Pejakovic ",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.PrintCalculator.dll",
+  "Description": "Image and file printing plugin "
+}

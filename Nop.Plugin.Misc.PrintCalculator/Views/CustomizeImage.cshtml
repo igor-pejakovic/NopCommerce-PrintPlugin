@@ -1,0 +1,97 @@
+﻿@model Nop.Plugin.Misc.PrintCalculator.Models.CustomizeImageModel
+@using Nop.Web.Framework.UI
+@{
+    Layout = "_ColumnsOne";
+    var priceOptions = Model.Options;
+}
+
+@{ 
+    var collection = @Html.Raw(Json.Serialize(Model.Options));
+    var loadScript = "initPrice(" + collection + ")";
+
+    string BP = "BasePrice";
+
+    var priceCode = $@"<script>
+                    $('#thumbnail').val($('#preview_img').attr('src'))
+                    var priceSpan = $('#price')
+                    var priceDict = {collection}
+                    var inputPaperType = $('#PaperType')
+                    var inputWitdhInCm = $('#WidthInCm')
+                    var inputHeightInCm = $('#HeightInCm')
+                    var height = {Model.HeightInCm}
+                    var width = {Model.WidthInCm}
+                    inputWitdhInCm.val(width.toFixed(2))
+                    inputHeightInCm.val(height.toFixed(2))
+                    var ratio = {Model.HeightInCm / Model.WidthInCm}
+                    var basePrice = {Model.Options[BP]}
+                    $('#submit-print').click(function() {{$('body').addClass('loading')}})
+
+                    function updatePrice() {{
+                        var price = basePrice * inputWitdhInCm.val() * inputHeightInCm.val()
+                        var paperTypeKey = inputPaperType.find('option:selected').val();
+                        price *= priceDict[paperTypeKey]
+                        priceSpan.text(price.toFixed(2))
+                    }}
+                    $(document).ready(updatePrice)
+                    inputHeightInCm.click(updatePrice)    
+                    inputWitdhInCm.click(updatePrice)
+                    inputPaperType.click(updatePrice)
+
+                    inputPaperType.change(updatePrice)
+
+                    inputWitdhInCm.change(function() {{ (inputHeightInCm.val((ratio * inputWitdhInCm.val()).toFixed(2)))}})
+                    inputHeightInCm.change(function() {{ (inputWitdhInCm.val(((1/ratio) * inputHeightInCm.val()).toFixed(2)))}})
+    </script>
+    ";
+    Html.AddInlineScriptParts(ResourceLocation.Footer, priceCode);
+
+
+}
+<head>
+    <style>
+
+    </style>
+    <link rel="stylesheet" href="@Url.Content("~/Plugins/Misc.PrintCalculator/Views/Styles/Customize.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Plugins/Misc.PrintCalculator/Views/Styles/Spinner.css")">
+</head>
+<div class="overlay"></div>
+<form asp-controller="Print" asp-action="CreateImage" method="post">
+    <div id="print-preview">
+        <div>
+            <img id="preview_img" alt="" src="@Model.Thumbnail" />
+        </div>
+        <div id="print-details">
+            <div class="spacer"></div>
+            <div>
+                <div class="option">
+                    @T("Plugins.Misc.PrintCalculator.PrintOptions.ImageType"):
+                    @Html.DropDownListFor(x => Model.PaperType, new SelectList(Model.PaperType, "Value", "Text"), htmlAttributes: new { id = "PaperType" })
+                </div>
+                <div class="spacer"></div>
+                <div class="option">
+                    @T("Plugins.Misc.PrintCalculator.PrintOptions.WidthInCm")
+                    <input type="number" name="WidthInCm" id="WidthInCm" step=".01"/>
+                </div>
+                 <div class="spacer"></div>
+                <div class="option">
+                    @T("Plugins.Misc.PrintCalculator.PrintOptions.HeightInCm")
+                    <input type="number" name="HeightInCm" id="HeightInCm" step=".01"/>
+                </div>
+                <div class="spacer"></div>
+                <div class="option">
+                    <strong>
+                        @T("Plugins.Misc.PrintCalculator.PrintOptions.Price"):
+                        <span id="price">0</span> KM
+                    </strong>
+                </div>
+                <div class="option">
+                    @T("Plugins.Misc.PrintCalculator.PrintOptions.NextStep")
+                </div>
+                <div class="spacer"></div>
+            </div>
+            <input type="hidden" name="name" value="@Model.Reference" />
+            <input type="hidden" id="thumbnail" name="thumbnail" />
+            <input type="submit" id="submit-print" value="@T("Plugins.Misc.PrintCalculator.PrintOptions.Submit")" />
+        </div> 
+    </div>
+</form>

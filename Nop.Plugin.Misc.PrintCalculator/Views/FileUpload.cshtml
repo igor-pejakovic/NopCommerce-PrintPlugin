@@ -1,0 +1,66 @@
+﻿@{
+    Layout = "_ColumnsOne";
+}
+<head>
+    <script type="text/javascript">
+        var fileobj;
+        function upload_file(e) {
+            e.preventDefault();
+            fileobj = e.dataTransfer.files[0];
+            ajax_file_upload(fileobj);
+        }
+
+        function file_explorer() {
+            document.getElementById('selectfile').click();
+            document.getElementById('selectfile').onchange = function () {
+                fileobj = document.getElementById('selectfile').files[0];
+                ajax_file_upload(fileobj);
+            };
+        }
+
+        function ajax_file_upload(file_obj) {
+            if (file_obj != undefined) {
+                var size = parseFloat(file_obj.size / 1024).toFixed(2);
+                if (size > 15000) {
+                    alert("@T("Plugins.Misc.PrintCalculator.PrintOptions.MaxSizeAlert")");
+                } else {
+                    $('body').addClass('loading');
+                    var form_data = new FormData();
+                    form_data.append('file', file_obj);
+                    $.ajax({
+                        type: 'POST',
+                        url: 'Upload/',
+                        contentType: false,
+                        encodingType: "multipart/form-data",
+                        processData: false,
+                        data: form_data,
+                        success: function (response) {
+                            if (response) {
+                                window.location.href = response
+                            }
+                            $('#selectfile').val('');
+                        }
+                    });
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="@Url.Content("~/Plugins/Misc.PrintCalculator/Views/FileUpload.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Plugins/Misc.PrintCalculator/Views/Styles/Spinner.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Plugins/Misc.PrintCalculator/Views/Styles/FileUpload.css")">
+</head>
+
+<div class="overlay"></div>
+<div id="drop_file_zone" ondrop="upload_file(event)" ondragover="return false">
+    <div id="drag_upload_file">
+        <p>@T("Plugins.Misc.PrintCalculator.PrintOptions.DragAndDrop")</p>
+        <p>@T("Plugins.Misc.PrintCalculator.PrintOptions.Or")</p>
+        <p><input type="button" class="file-submit-button" value="@T("Plugins.Misc.PrintCalculator.PrintOptions.SelectFile")" onclick="file_explorer();"></p>
+        <input type="file" id="selectfile">
+    </div>
+</div>
+<p>@T("Plugins.Misc.PrintCalculator.PrintOptions.SupportedFormatsText")@T("Plugins.Misc.PrintCalculator.PrintOptions.SupportedFormats")</p>
+<p>@T("Plugins.Misc.PrintCalculator.PrintOptions.MaxSizeText")@T("Plugins.Misc.PrintCalculator.PrintOptions.MaxSize")</p>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
